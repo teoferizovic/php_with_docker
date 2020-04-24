@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+    web:
+      build:
+        context: ./php
+        dockerfile: Dockerfile
+      container_name: php_cont
+      depends_on:
+        - mysql
+      volumes:
+        - ./src:/var/www/html
+      ports:
+        - 6068:80
+    mysql:
+      image: mysql:5.7
+      environment:
+        - MYSQL_ROOT_PASSWORD=rootpassword
+        - MYSQL_USER=testuser
+        - MYSQL_PASSWORD=testpass 
+        - MYSQL_DATABASE=test_db
+      container_name: mysql_cont
+      restart: always
+    phpmyadmin:
+      image: phpmyadmin/phpmyadmin:4.7
+      depends_on:
+        - mysql
+      ports:
+        - "6066:80"
+      environment:
+        - PMA_HOST=mysql_cont
+        - PMA_PORT=3306
+      volumes:
+        - /sessions
+      container_name: phpmyadmin_cont
+         
+    
